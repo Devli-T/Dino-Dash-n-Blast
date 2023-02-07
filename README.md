@@ -7,3 +7,14 @@ THEN:
 Controls for game: WASD or arrow key for movement, SHIFT for speed, SPACE for fireball.
 Ctr + Q or L to Quit
 
+References:
+https://lionheart963.itch.io/wizard - Enemy
+Pinterest Starry night by FrostPumpkin – Start Background
+foxsuke.blogspot.com – Game Background
+https://www.youtube.com/watch?v=0ByCY7xdkR4 – Background Music
+OpenGameArt.com – Heart
+@ScissorMarks – Dino Characters
+https://pixabay.com/sound-effects/search/fireball/ - fireball music
+
+
+
