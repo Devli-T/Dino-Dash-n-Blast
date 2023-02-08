@@ -288,9 +288,6 @@ while not game_over:
     # Draw the background image
     screen.blit(lvl1, (camera_offset_x, camera_offset_y))
 
-    #for enemy in enemies:
-     #   enemy.draw(screen)
-      #  print("im bein printed bukko")
 
     for enemy in enemies:
         enemy.move_towards_player(player)
@@ -300,9 +297,9 @@ while not game_over:
         if player.rect.x - window_width // 2 <= enemy.rect.x <= player.rect.x + window_width // 2:
             print("passed 1")
             if player.rect.y - window_height // 2 <= enemy.rect.y <= player.rect.y + window_height // 2:
-                di = enemy.rect.x - (player.rect.x - window_width // 2)
-                ck = enemy.rect.y - (player.rect.y - window_height // 2)
-                screen.blit(enemy.image, (di,ck))
+                a = enemy.rect.x - (player.rect.x - window_width // 2)
+                b = enemy.rect.y - (player.rect.y - window_height // 2)
+                screen.blit(enemy.image, (a,b))
                 print("IM ON THE SCREEN BAYBEEEEEE")
 
     if left:
