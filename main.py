@@ -209,11 +209,13 @@ spawn_threshold = 500
 
 # play the background music in a loop
 background_music.play(-1)
+enemies = generator.create_enemies(World_Map, enemy_image, pygame.time.get_ticks() - start_time)
 
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
+
 
     # Get the key presses from the user
     keys = pygame.key.get_pressed()
@@ -286,16 +288,22 @@ while not game_over:
     # Draw the background image
     screen.blit(lvl1, (camera_offset_x, camera_offset_y))
 
-    for enemy in enemies:
-        if enemy.health == 0:
-            enemies.remove(enemy)
-        if enemy.rect.x >= player.rect.x - window_width // 2 and enemy.rect.x <= player.rect.x + window_width // 2:
-            if enemy.rect.y >= player.rect.y - window_height // 2 and enemy.rect.y <= player.rect.y + window_height // 2:
-                enemy.rect.x -= player.rect.x - window_width // 2
-                enemy.rect.y -= player.rect.y - window_height // 2
+    #for enemy in enemies:
+     #   enemy.draw(screen)
+      #  print("im bein printed bukko")
 
     for enemy in enemies:
-        enemy.draw(screen)
+        enemy.move_towards_player(player)
+        if enemy.health == 0:
+            enemies.remove(enemy)
+            print("ded")
+        if player.rect.x - window_width // 2 <= enemy.rect.x <= player.rect.x + window_width // 2:
+            print("passed 1")
+            if player.rect.y - window_height // 2 <= enemy.rect.y <= player.rect.y + window_height // 2:
+                di = enemy.rect.x - (player.rect.x - window_width // 2)
+                ck = enemy.rect.y - (player.rect.y - window_height // 2)
+                screen.blit(enemy.image, (di,ck))
+                print("IM ON THE SCREEN BAYBEEEEEE")
 
     if left:
         player.image = pygame.transform.flip(player.image, True, False)
@@ -317,7 +325,6 @@ while not game_over:
 
     print("final" + str(window_width // 2) + " " + str(window_height // 2))
 
-    #enemy.move_towards_player(player)
 
 
     # Check if the player has collided with the walls and enemies
@@ -359,7 +366,7 @@ end = True
 while end:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over = False
+            end = False
 
     # Draw the background image
     screen.blit(background, (0, 0))
@@ -375,6 +382,3 @@ while end:
     pygame.display.update()
 # Quit the game
 pygame.quit()
-
-
-
