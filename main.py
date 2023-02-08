@@ -209,7 +209,12 @@ spawn_threshold = 500
 
 # play the background music in a loop
 background_music.play(-1)
-enemies = generator.create_enemies(World_Map, enemy_image, pygame.time.get_ticks() - start_time)
+enemies = generator.create_enemies(World_Map, enemy_image)
+enemies.add(generator.create_enemies(World_Map, enemy_image))
+enemies.add(generator.create_enemies(World_Map, enemy_image))
+enemies.add(generator.create_enemies(World_Map, enemy_image))
+enemies.add(generator.create_enemies(World_Map, enemy_image))
+death = 0
 
 while not game_over:
     for event in pygame.event.get():
@@ -228,7 +233,7 @@ while not game_over:
     # Store the original player position
     original_player_x = player.rect.x
     original_player_y = player.rect.y
-    print("orignal" + str(original_player_x) +" "+ str(original_player_y))
+    print("orignal" + str(original_player_x) + " " + str(original_player_y))
 
     # Move the player in the specified direction
     if keys[pygame.K_UP] or keys[pygame.K_w]:
@@ -236,7 +241,7 @@ while not game_over:
         if len(fireballs) != 0:
             for fire in fireballs:
                 if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-                    fire.y += 5
+                    fire.y += 7
                 else:
                     fire.y += 3
     elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
@@ -244,7 +249,7 @@ while not game_over:
         if len(fireballs) != 0:
             for fire in fireballs:
                 if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-                    fire.y -= 5
+                    fire.y -= 7
                 else:
                     fire.y -= 3
     elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -260,7 +265,7 @@ while not game_over:
         player.health = 0
 
     if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-        player.move = 5
+        player.move = 7
     else:
         player.move = 3
 
@@ -288,17 +293,17 @@ while not game_over:
     # Draw the background image
     screen.blit(lvl1, (camera_offset_x, camera_offset_y))
 
-
     for enemy in enemies:
-        enemy.move_towards_player(player)
-        if enemy.health == 0:
+        death = enemy.move_towards_player(player, death)
+        if enemy.health <= 0:
             enemies.remove(enemy)
-            print("ded")
+            death += 1
+            enemies.add(generator.create_enemies(World_Map, enemy_image))
         if player.rect.x - window_width // 2 <= enemy.rect.x <= player.rect.x + window_width // 2:
             print("passed 1")
             if player.rect.y - window_height // 2 <= enemy.rect.y <= player.rect.y + window_height // 2:
-                a = enemy.rect.x - (player.rect.x - window_width // 2)
-                b = enemy.rect.y - (player.rect.y - window_height // 2)
+                a = enemy.rect.x - (player.rect.x - window_width // 2) - 20
+                b = enemy.rect.y - (player.rect.y - window_height // 2) - 40
                 screen.blit(enemy.image, (a,b))
                 print("IM ON THE SCREEN BAYBEEEEEE")
 
@@ -311,7 +316,7 @@ while not game_over:
             fireballs.remove(fireball)
     for fireball in fireballs:
         for enemy in enemies:
-            if pygame.Rect(fireball.x, fireball.y, 20, 20).colliderect(pygame.Rect(enemy.rect.x, enemy.rect.y, 32, 32)):
+            if pygame.Rect(fireball.x, fireball.y, 20, 20).colliderect(pygame.Rect(enemy.rect.x - (player.rect.x - window_width // 2) - 20, enemy.rect.y - (player.rect.y - window_height // 2) - 40, 32, 32)):
                 fireballs.remove(fireball)
                 enemy.health -= 1
                 break
@@ -360,6 +365,7 @@ font = pygame.font.Font(None, 32)
 pygame.display.set_caption("Dino Dash 'n Blast")
 
 end = True
+print("Dead Enemies: " + str(death))
 while end:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -371,10 +377,12 @@ while end:
     # Flash the "Start" text
     if int(time.time() * 3) % 2 == 0:
         text = font.render("Game Over", True, white)
+        text2 = font.render("Dead Enemies: " + str(death), True, white)
         text_rect = text.get_rect()
         text_x = window_width // 2 - text_rect.width // 2
         text_y = window_height // 2 - text_rect.height // 2
         screen.blit(text, [text_x, text_y])
+        screen.blit(text2, [text_x - 20, text_y + 20])
 
     pygame.display.update()
 # Quit the game
