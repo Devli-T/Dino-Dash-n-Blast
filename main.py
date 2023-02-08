@@ -54,10 +54,6 @@ lvl1 = pygame.image.load("background_lvl1.png")
 lvl1 = pygame.transform.scale(lvl1, (window_width, window_height))
 lvl1 = pygame.transform.scale(lvl1, (1835, 1250))
 
-# Load Player image
-player1 = pygame.image.load("player.png")
-player1 = pygame.transform.scale(player1, (50, 70))
-
 dino_image = pygame.image.load("Dino1.gif")
 dino_image = pygame.transform.scale(dino_image, (70, 70))
 
