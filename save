@@ -1,0 +1,160 @@
+import pygame
+import time
+
+pygame.init()
+
+# Define the dimensions of the game window
+window_width = 1200   #640
+window_height = 800  #480
+screen = pygame.display.set_mode((window_width,window_height))
+
+# Set FPS count
+fps = 120
+clock = pygame.time.Clock()
+
+# Define the colors
+black = (0,0,0)
+white = (255,255,255)
+red = (255,0,0)
+
+# Define the font used in the game
+font = pygame.font.Font(None, 32)
+
+# Load the map from the file
+from map import World_Map
+
+# Initialise the game window
+window = pygame.display.set_mode((window_width, window_height))
+
+# Define the player's starting position
+player_x = 0
+player_y = 0
+
+# Find the starting position of the player in the map
+for row_index, row in enumerate(World_Map):
+    if "p" in row:
+        player_x = row.index("p") * 40
+        player_y = row_index * 40
+
+# Define the movement speed of the player
+move_speed = 2
+
+# Load the start background image
+background = pygame.image.load("background.png")
+background = pygame.transform.scale(background, (window_width, window_height))
+
+# Load level 1 image
+lvl1 = pygame.image.load("background_lvl1.png")
+lvl1 = pygame.transform.scale(lvl1, (window_width, window_height))
+
+# increase the size of the image
+lvl1 = pygame.transform.scale(lvl1, (1835, 1250))
+
+# Set the title of the window
+pygame.display.set_caption("2D World Exploring Game")
+
+# load music file
+pygame.mixer.music.load("Background Music.mp3")
+
+# play music
+pygame.mixer.music.play()
+
+# Start the game loop
+game_over = False
+start_screen = True
+
+# Start screen
+while start_screen:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            start_screen = False
+            game_over = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                start_screen = False
+
+    # Draw the background image
+    screen.blit(background, (0, 0))
+
+    # Flash the "Start" text
+    if int(time.time() * 3) % 2 == 0:
+        text = font.render("Press Space to Start", True, white)
+        text_rect = text.get_rect()
+        text_x = window_width // 2 - text_rect.width // 2
+        text_y = window_height // 2 - text_rect.height // 2
+        screen.blit(text, [text_x, text_y])
+
+    pygame.display.update()
+
+timeTracker = time.time_ns()
+
+while not game_over:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_over = True
+
+    # Get the key presses from the user
+    keys = pygame.key.get_pressed()
+
+    deltaTime = time.time_ns() - timeTracker
+
+    # Store the original player position
+    original_player_x = player_x
+    original_player_y = player_y
+
+    # Move the player in the specified direction
+    if keys[pygame.K_UP]:
+        player_y -= move_speed * (10000000 / deltaTime)
+    if keys[pygame.K_DOWN]:
+        player_y += move_speed * (10000000 / deltaTime)
+    if keys[pygame.K_LEFT]:
+        player_x -= move_speed * (10000000 / deltaTime)
+    if keys[pygame.K_RIGHT]:
+        player_x += move_speed * (10000000 / deltaTime)
+
+    timeTracker = time.time_ns()
+
+    # Define the camera offset based on the player's position
+    camera_offset_x = -player_x + window_width // 2
+    camera_offset_y = -player_y + window_height // 2
+
+    # Clear the game window
+    screen.blit(background, (0, 0))
+
+    # Draw the background image
+    screen.blit(lvl1, (camera_offset_x, camera_offset_y))
+
+    # Loop through the map and draw the rocks and enemies
+    for row_index, row in enumerate(World_Map):
+        for col_index, col in enumerate(row):
+            x = col_index * 40
+            y = row_index * 40
+            if x >= player_x - window_width // 2 and x <= player_x + window_width // 2:
+                if y >= player_y - window_height // 2 and y <= player_y + window_height // 2:
+                    x -= player_x - window_width // 2
+                    y -= player_y - window_height // 2
+                    if col == "x":
+                        pygame.draw.rect(window, white, (x, y, 40, 40))
+                    elif col == "e":
+                        pygame.draw.circle(window, white, (x + 20, y + 20), 20)
+
+    # Draw the player in the game window
+    pygame.draw.rect(window, white, (window_width // 2, window_height // 2, 20, 20))
+
+    # Check if the player has collided with the walls and enemies
+    for row_index, row in enumerate(World_Map):
+        for col_index, col in enumerate(row):
+            x = col_index * 40
+            y = row_index * 40
+            if col == "x" and player_x + 20 > x and player_x < x + 40 and player_y + 20 > y and player_y < y + 40:
+                player_x = original_player_x
+                player_y = original_player_y
+            elif col == "e" and player_x + 20 > x and player_x < x + 40 and player_y + 20 > y and player_y < y + 40:
+                player_x = original_player_x
+                player_y = original_player_y
+
+    # Update the game window
+    pygame.display.update()
+
+# Quit the game
+pygame.quit()
