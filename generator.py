@@ -43,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
         distance = ((self.rect.x - Player.rect.x) ** 2 + (self.rect.y - Player.rect.y) ** 2) ** 0.5
 
         # If the distance is less than 20 pixels, move the enemy towards the player
-        if distance < 20:
+        if distance < 900:
             angle = math.atan2(Player.rect.y - self.rect.y, Player.rect.x - self.rect.x)
             self.rect.x += math.cos(angle)
             self.rect.y += math.sin(angle)
@@ -64,6 +64,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+        print(self.rect)
 
 class Fireball:
     def __init__(self, x, y):
@@ -80,7 +81,7 @@ def create_enemies(World_Map, enemy_image, time):
         for x, char in enumerate(row):
             # Position calculation based on the dimensions of the enemy sprite
             # and the size of the cells in the World_Map
-            if char == "v" and np.random.choice(ran, p=[0.1 + (time // 1000000000), 0.9 - (time // 1000000000)]):
+            if char == "v" and np.random.choice(ran, p=[0.1, 0.9]):
                 enemies.add(Enemy(x*40 + 20, y*40 + 20, enemy_image))
     return enemies
 
