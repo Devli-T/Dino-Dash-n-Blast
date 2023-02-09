@@ -53,6 +53,12 @@ class Enemy(pygame.sprite.Sprite):
 
             self.rect.x -= dx
             self.rect.y -= dy
+        death = self.health_check(Player, death)
+        return death
+
+    def health_check(self, Player, death):
+        a = Player.rect.x + 20
+        b = Player.rect.y + 40
         if self.rect.x == a and self.rect.y == b:
             self.health -= 1
             Player.health -= 1
@@ -60,20 +66,6 @@ class Enemy(pygame.sprite.Sprite):
             Player.rect.y += 5
             death += 1
         return death
-
-    def update(self, Player):
-        if abs(self.x - Player.rect.x) <= 2 and abs(self.y - Player.rect.y) <= 2:
-            if Player.rect.x > self.x:
-                self.x += 1
-            elif Player.rect.x < self.x:
-                self.x -= 1
-            if Player.rect.y > self.y:
-                self.y += 1
-            elif Player.rect.y < self.y:
-                self.y -= 1
-            if self.x == Player.rect.x and self.y == Player.rect.y:
-                self.hearts -= 1
-                Player.hearts -= 1
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
