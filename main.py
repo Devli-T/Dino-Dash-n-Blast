@@ -322,6 +322,7 @@ while not game_over:
                 break
         screen.blit(fireball.image, (fireball.x, fireball.y))
 
+    death = enemy.health_check(player, death)
     # Draw player
     screen.blit(player.image,(window_width // 2, window_height // 2))
 
@@ -387,3 +388,6 @@ while end:
     pygame.display.update()
 # Quit the game
 pygame.quit()
+
+
+
