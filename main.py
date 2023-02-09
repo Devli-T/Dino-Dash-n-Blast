@@ -317,12 +317,12 @@ while not game_over:
     for fireball in fireballs:
         for enemy in enemies:
             if pygame.Rect(fireball.x, fireball.y, 20, 20).colliderect(pygame.Rect(enemy.rect.x - (player.rect.x - window_width // 2) - 20, enemy.rect.y - (player.rect.y - window_height // 2) - 40, 32, 32)):
+                death = enemy.health_check(player, death)
                 fireballs.remove(fireball)
                 enemy.health -= 1
                 break
         screen.blit(fireball.image, (fireball.x, fireball.y))
 
-    death = enemy.health_check(player, death)
     # Draw player
     screen.blit(player.image,(window_width // 2, window_height // 2))
 
@@ -388,6 +388,3 @@ while end:
     pygame.display.update()
 # Quit the game
 pygame.quit()
-
-
-
